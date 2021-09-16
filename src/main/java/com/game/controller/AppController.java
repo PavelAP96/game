@@ -2,13 +2,14 @@ package com.game.controller;
 
 import com.game.entity.Player;
 import com.game.exception_handling.exceptions.NoSuchPlayerException;
+import com.game.exception_handling.exceptions.NotValidRequestException;
 import com.game.service.PlayerService;
-import com.sun.istack.internal.NotNull;
+import com.game.service.PlayerValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.List;
 
 @RestController
@@ -37,12 +38,16 @@ public class AppController {
 
     @PostMapping("/players")
     public Player savePlayerRequest(@RequestBody Player player) {
+        if (!playerService.validatePlayer(player))
+            throw new NotValidRequestException();
         playerService.savePlayer(player);
         return player;
     }
 
     @GetMapping("/players/{id}")
     public Player getPlayerRequest(@PathVariable Long id) {
+        if (id <= 0)
+            throw new NotValidRequestException();
         Player player = playerService.getPlayerById(id);
         if (player == null)
             throw new NoSuchPlayerException();
@@ -51,16 +56,29 @@ public class AppController {
 
     @PostMapping("/players/{id}")
     public Player updatePlayerRequest(@PathVariable Long id, @RequestBody Player player) {
-        if (playerService.getPlayerById(id)==null)
+        if (id <= 0)
+            throw new NotValidRequestException();
+
+        Player currentPlayer = playerService.getPlayerById(id);
+
+        if (currentPlayer == null)
             throw new NoSuchPlayerException();
-        player.setId(id);
-        playerService.savePlayer(player);
-        return player;
+
+        playerService.comparePlayersParamsBeforeUpdate(currentPlayer, player);
+
+        if (!playerService.validatePlayer(currentPlayer))
+            throw new NotValidRequestException();
+
+        playerService.savePlayer(currentPlayer);
+
+        return currentPlayer;
     }
 
     @DeleteMapping("/players/{id}")
-    public void deletePlayerRequest(@PathVariable Long id){
-        if (playerService.getPlayerById(id)==null)
+    public void deletePlayerRequest(@PathVariable Long id) {
+        if (id <= 0)
+            throw new NotValidRequestException();
+        if (playerService.getPlayerById(id) == null)
             throw new NoSuchPlayerException();
         playerService.deletePlayer(id);
     }

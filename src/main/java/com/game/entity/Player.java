@@ -1,5 +1,6 @@
 package com.game.entity;
 
+import com.game.exception_handling.exceptions.NotValidRequestException;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ public class Player {
     private Date birthday;
 
     @Column
-    private Boolean banned;
+    private Boolean banned = false;
 
     @Column
     private Integer experience;
@@ -67,6 +68,8 @@ public class Player {
     }
 
     public void setName(String name) {
+        if (name == null)
+            throw new NotValidRequestException();
         this.name = name;
     }
 
@@ -75,6 +78,8 @@ public class Player {
     }
 
     public void setTittle(String title) {
+        if (title == null)
+            throw new NotValidRequestException();
         this.title = title;
     }
 
@@ -83,6 +88,8 @@ public class Player {
     }
 
     public void setRace(Race race) {
+        if (race == null)
+            throw new NotValidRequestException();
         this.race = race;
     }
 
@@ -91,6 +98,8 @@ public class Player {
     }
 
     public void setProfession(Profession profession) {
+        if (profession == null)
+            throw new NotValidRequestException();
         this.profession = profession;
     }
 
@@ -99,6 +108,9 @@ public class Player {
     }
 
     public void setBirthday(Date birthday) {
+        if (birthday == null)
+            throw new NotValidRequestException();
+
         this.birthday = birthday;
     }
 
@@ -115,6 +127,9 @@ public class Player {
     }
 
     public void setExperience(Integer experience) {
+        if (experience == null)
+            throw new NotValidRequestException();
+
         this.experience = experience;
     }
 

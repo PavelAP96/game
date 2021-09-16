@@ -6,17 +6,21 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface PlayerService {
-    public List<Player> getAllPlayers();
+    List<Player> getAllPlayers();
 
-    public int getPlayersCount();
+    int getPlayersCount();
 
-    public void savePlayer(Player player);
+    void savePlayer(Player player);
 
-    public Player getPlayerById(Long id);
+    Player getPlayerById(Long id);
 
-    public void deletePlayer(Long id);
+    void deletePlayer(Long id);
 
-    public List<Player> getPlayersWithSearchSpec(HttpServletRequest httpServletRequest);
+    List<Player> getPlayersWithSearchSpec(HttpServletRequest httpServletRequest);
 
-    public int getPlayersCountWithSearchSpec(HttpServletRequest httpServletRequest);
+    int getPlayersCountWithSearchSpec(HttpServletRequest httpServletRequest);
+
+    boolean validatePlayer(Player player);
+
+    void comparePlayersParamsBeforeUpdate(Player currentPlayer, Player newPlayer);
 }
